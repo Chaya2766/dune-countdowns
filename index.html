@@ -42,7 +42,7 @@
         <h1>Dune: Awakening - Coriolis Storm Countdown for Europe server</h1>
         <h1>Time remaining: <span id="countdown_clock"></span></h1>
         <article>
-        note: this counter just assumes that the storm happens every monday at 18:00 of UTC+0, the countdown will be wrong if that ever changes.
+        note: this counter just assumes that the storm happens every monday at 17:00 of UTC+0, the countdown will be wrong if that ever changes.
         </article>
     </div>
 
@@ -51,11 +51,11 @@
             // Get current time in UTC
             const now = new Date();
             
-            // Calculate next Monday at 6:00 PM UTC
+            // Calculate next Monday at 17:00 UTC
             let nextEvent = new Date(now);
-            nextEvent.setUTCHours(18, 0, 0, 0);
+            nextEvent.setUTCHours(17, 0, 0, 0);
             
-            // If today is Monday and it's before 10 AM UTC, use today
+            // If today is Monday and it's before 17 UTC, use today
             // Otherwise, move to next Monday
             const dayOfWeek = nextEvent.getUTCDay();
             const daysUntilMonday = dayOfWeek === 1 ? 0 : (8 - dayOfWeek) % 7;
