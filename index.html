@@ -46,12 +46,37 @@
           font-size: 2vh;
           text-align: center;
         }
+        
+        .controls {
+            margin: 10px;
+            font-size: 2vh;
+        }
+        
+        .controls label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .controls input[type="checkbox"] {
+            width: 10vh;
+            height: 10vh;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Dune: Awakening - Coriolis Storm Countdown for Europe server</h1>
         <h1 class="countdown">Time remaining:<br><span id="countdown_clock"></span></h1>
+        <div class="controls">
+            <label>
+                <input type="checkbox" id="soundToggle" checked>
+                Enable sound alerts (on 5 minutes left and on time zero)
+            </label>
+        </div>
         <article class="note">
         note: this counter just assumes that the storm happens every monday at 17:00 of UTC+0, the countdown will be wrong if that ever changes.
         </article>
@@ -63,6 +88,11 @@
     </article>
 
     <script>
+        let alerted5Minutes = false;
+        let alertedZero = false;
+        let audioContext = null;
+        document.getElementById('soundToggle').checked = false;
+        
         function updateCountdown() {
             // Get current time in UTC
             const now = new Date();
@@ -92,6 +122,71 @@
             document.getElementById('countdown_clock').innerHTML = 
                 `${days} days <br> ${hours} hours <br> ${minutes} minutes <br> ${seconds} seconds`;
             
+            // Check if we've hit 5 minutes remaining
+            if (timeDiff <= 5 * 60 * 1000 && timeDiff > 0 && !alerted5Minutes) {
+                alerted5Minutes = true;
+                playAlertSound();
+            }
+            
+            // Check if we've hit zero
+            if (timeDiff <= 0 && !alertedZero) {
+                alertedZero = true;
+                playAlertSound();
+                // Reset flags for next week
+                setTimeout(() => {
+                    alerted5Minutes = false;
+                    alertedZero = false;
+                }, 1000);
+            }
+            
+            function playAlertSound() {
+            // Initialize AudioContext on first user interaction
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            const now = audioContext.currentTime;
+            const pingDuration = 0.75; // Duration of each ping
+            const pauseDuration = 0.0; // Pause between pings
+            
+            // Play 3 pings
+            for (let i = 0; i < 5; i++) {
+                const startTime = now + (i * (pingDuration + pauseDuration));
+                
+                // First oscillator at 800Hz
+                const oscillator1 = audioContext.createOscillator();
+                const gainNode1 = audioContext.createGain();
+                oscillator1.connect(gainNode1);
+                gainNode1.connect(audioContext.destination);
+                oscillator1.frequency.value = 800;
+                oscillator1.type = 'sawtooth';
+                gainNode1.gain.setValueAtTime(0.15, startTime);
+                gainNode1.gain.exponentialRampToValueAtTime(0.01, startTime + pingDuration);
+                oscillator1.start(startTime);
+                oscillator1.stop(startTime + pingDuration);
+                
+                // Second oscillator at 650Hz
+                const oscillator2 = audioContext.createOscillator();
+                const gainNode2 = audioContext.createGain();
+                oscillator2.connect(gainNode2);
+                gainNode2.connect(audioContext.destination);
+                oscillator2.frequency.value = 650;
+                oscillator2.type = 'sawtooth';
+                gainNode2.gain.setValueAtTime(0.15, startTime);
+                gainNode2.gain.exponentialRampToValueAtTime(0.01, startTime + pingDuration);
+                oscillator2.start(startTime);
+                oscillator2.stop(startTime + pingDuration);
+            }
+        }
+
+            
+            // Initialize AudioContext when checkbox is first clicked
+            document.getElementById('soundToggle').addEventListener('change', function() {
+                if (this.checked && !audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            });
+            
             // Update every second
             setTimeout(updateCountdown, 1000);
         }
@@ -101,4 +196,3 @@
     </script>
 </body>
 </html>
-
