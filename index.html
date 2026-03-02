@@ -78,7 +78,7 @@
             </label>
         </div>
         <article class="note">
-        note: this counter just assumes that the storm happens every monday at 17:00 of UTC+0, the countdown will be wrong if that ever changes.
+        note: this counter just assumes that the storm happens every monday at 18:00 of UTC+0, the countdown will be wrong if that ever changes.
         </article>
     </div>
     <article class="note">
@@ -89,7 +89,7 @@
 
     <script>
         let alerted5Minutes = false;
-        let alertedZero = false;
+        let alerted10seconds = false;
         let audioContext = null;
         document.getElementById('soundToggle').checked = false;
         
@@ -97,11 +97,11 @@
             // Get current time in UTC
             const now = new Date();
             
-            // Calculate next Monday at 17:00 UTC
+            // Calculate next Monday at 18:00 UTC
             let nextEvent = new Date(now);
-            nextEvent.setUTCHours(17, 0, 0, 0);
+            nextEvent.setUTCHours(18, 0, 0, 0);
             
-            // If today is Monday and it's before 17 UTC, use today
+            // If today is Monday and it's before 18 UTC, use today
             // Otherwise, move to next Monday
             const dayOfWeek = nextEvent.getUTCDay();
             const daysUntilMonday = dayOfWeek === 1 ? 0 : (8 - dayOfWeek) % 7;
@@ -129,13 +129,13 @@
             }
             
             // Check if we've hit zero
-            if (timeDiff <= 0 && !alertedZero) {
-                alertedZero = true;
+            if (timeDiff <= 10*1000 && !alerted10seconds) {
+                alerted10seconds = true;
                 playAlertSound();
                 // Reset flags for next week
                 setTimeout(() => {
                     alerted5Minutes = false;
-                    alertedZero = false;
+                    alerted10seconds = false;
                 }, 1000);
             }
             
@@ -149,7 +149,7 @@
             const pingDuration = 0.75; // Duration of each ping
             const pauseDuration = 0.0; // Pause between pings
             
-            // Play 3 pings
+            // Play 5 pings
             for (let i = 0; i < 5; i++) {
                 const startTime = now + (i * (pingDuration + pauseDuration));
                 
