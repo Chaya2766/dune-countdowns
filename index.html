@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dune: Awakening - Coriolis Storm Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+        }
+        
+        h1 {
+            margin: 10px 0;
+            font-size: 2vw;
+        }
+        
+        #countdown_clock {
+            font-size: 2.5vw;
+            color: #ffa500;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dune: Awakening - Coriolis Storm Countdown for Europe server</h1>
+        <h1>Time remaining: <span id="countdown_clock"></span></h1>
+        <article>
+        note: this counter just assumes that the storm happens every monday at 18:00 of UTC+0, the countdown will be wrong if that ever changes.
+        </article>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            // Get current time in UTC
+            const now = new Date();
+            
+            // Calculate next Monday at 6:00 PM UTC
+            let nextEvent = new Date(now);
+            nextEvent.setUTCHours(18, 0, 0, 0);
+            
+            // If today is Monday and it's before 10 AM UTC, use today
+            // Otherwise, move to next Monday
+            const dayOfWeek = nextEvent.getUTCDay();
+            const daysUntilMonday = dayOfWeek === 1 ? 0 : (8 - dayOfWeek) % 7;
+            
+            if (daysUntilMonday > 0 || nextEvent <= now) {
+                nextEvent.setUTCDate(nextEvent.getUTCDate() + (daysUntilMonday === 0 && nextEvent <= now ? 7 : daysUntilMonday));
+            }
+            
+            // Calculate time difference
+            const timeDiff = nextEvent - now;
+            
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+            
+            // Update the span
+            document.getElementById('countdown_clock').textContent = 
+                `${days} days + ${hours} hours + ${minutes} minutes + ${seconds} seconds`;
+            
+            // Update every second
+            setTimeout(updateCountdown, 1000);
+        }
+        
+        // Start the countdown when the page loads
+        updateCountdown();
+    </script>
+</body>
+</html>
+
