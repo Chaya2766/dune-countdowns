@@ -7,7 +7,6 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -18,7 +17,14 @@
         
         .container {
             text-align: center;
-            padding: 40px;
+            padding-left: 40px;
+            padding-right: 40px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            margin-left: 40px;
+            margin-right: 40px;
+            margin-top: 40px;
+            margin-bottom: 10px;
             background: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
@@ -26,25 +32,35 @@
         
         h1 {
             margin: 10px 0;
-            font-size: 2vw;
+            font-size: 2.5vh;
         }
         
-        #countdown_clock {
-            font-size: 2.5vw;
+        .countdown {
+            font-size: 5vh;
             color: #ffa500;
             font-weight: bold;
             font-family: 'Courier New', monospace;
+        }
+        
+        .note{
+          font-size: 2vh;
+          text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Dune: Awakening - Coriolis Storm Countdown for Europe server</h1>
-        <h1>Time remaining: <span id="countdown_clock"></span></h1>
-        <article>
+        <h1 class="countdown">Time remaining:<br><span id="countdown_clock"></span></h1>
+        <article class="note">
         note: this counter just assumes that the storm happens every monday at 17:00 of UTC+0, the countdown will be wrong if that ever changes.
         </article>
     </div>
+    <article class="note">
+      QR code below for if you wanna bring up the counter on your phone.
+      <br>
+      <img src="QR.webp" style="width: 20vw;"></img>
+    </article>
 
     <script>
         function updateCountdown() {
@@ -73,8 +89,8 @@
             const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
             
             // Update the span
-            document.getElementById('countdown_clock').textContent = 
-                `${days} days + ${hours} hours + ${minutes} minutes + ${seconds} seconds`;
+            document.getElementById('countdown_clock').innerHTML = 
+                `${days} days <br> ${hours} hours <br> ${minutes} minutes <br> ${seconds} seconds`;
             
             // Update every second
             setTimeout(updateCountdown, 1000);
